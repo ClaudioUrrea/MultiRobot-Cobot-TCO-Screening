@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this material, please cite the article and the archived release."
+title: "MultiRobot-Cobot-TCO-Screening: Economic Model, Digital-Twin Inputs and Verification Scripts"
+type: software
+authors:
+  - family-names: Urrea
+    given-names: Claudio
+    orcid: "https://orcid.org/0000-0001-7197-8928"
+    affiliation: "University of Santiago of Chile"
+doi: 10.6084/m9.figshare.35025634
+repository-code: "https://github.com/ClaudioUrrea/MultiRobot-Cobot-TCO-Screening"
+license: MIT
+version: 1.0.0
+date-released: 2026-11-16
+keywords:
+  - collaborative robots
+  - total cost of ownership
+  - net present value
+  - Monte Carlo simulation
+  - digital twin
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Urrea
+      given-names: Claudio
+      orcid: "https://orcid.org/0000-0001-7197-8928"
+  title: "Digital-Twin-Based Total Cost of Ownership and Risk Screening for Multi-Robot Collaborative Assembly Cells"
+  journal: "Machines"
+  year: 2026
+  notes: "Submitted"

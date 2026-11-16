@@ -1,0 +1,17 @@
+item,category,N1,N2,N3,N4,N5
+Robots (UR5e),Hardware,35,70,105,140,175
+Grippers and tooling,Hardware,8,16,24,32,40
+Depth cameras,Hardware,3,3,3,3,3
+Compute platform,Hardware,12,18,24,30,36
+Network,Hardware,4,6,8,10,12
+Control licenses,Software,15,22,30,38,45
+Digital twin platform,Software,8,8,8,8,8
+Simulation tools,Software,6,6,6,6,6
+Mechanical mounting,Installation,5,8,11,14,17
+Electrical integration,Installation,3,5,7,9,11
+Safety enclosure,Installation,8,12,16,20,24
+Cabling,Installation,2,3,4,5,6
+Operator training,Training and commissioning,3,5,7,9,11
+Technician training,Training and commissioning,8,8,8,8,8
+Commissioning,Training and commissioning,6,9,12,15,18
+Contingency,Contingency,16,27,39,51,63

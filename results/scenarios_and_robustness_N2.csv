@@ -1,0 +1,8 @@
+case,npv_MUSD,irr_pct,payback_months
+Pessimistic,0.0496,12.2,66.71
+Base,0.6909,58.77,20.55
+Optimistic,1.2866,100.7,12.55
+Weighted expected value,0.6795,,
+Disrupted operating rate,0.6568,56.55,21.28
+Freed hours released at 28/h,0.8986,72.1,17.05
+Freed hours released at 45/h,1.0248,80.09,15.49

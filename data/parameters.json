@@ -1,0 +1,83 @@
+{
+  "single_robot_rate_units_per_shift": 307,
+  "manual_units_per_shift": 228,
+  "shifts_per_year": {
+    "single": 192.0,
+    "dual": 383.0,
+    "triple": 574.5
+  },
+  "base_schedule": [
+    "single",
+    "single",
+    "dual",
+    "dual",
+    "dual"
+  ],
+  "part_value_usd": 15.0,
+  "gross_margin": 0.22,
+  "defect_rate_manual": 0.032,
+  "defect_rate_cobot_nominal": 0.006,
+  "defect_rate_cobot_disrupted": 0.008,
+  "disrupted_units_per_shift_N2": 547.0,
+  "warranty_cost_usd_per_defect": 30.0,
+  "redeployment_allowance_kUSD": 25.0,
+  "discount_rate": 0.08,
+  "horizon_years": 10,
+  "salvage_fraction": 0.15,
+  "tax_rate": 0.27,
+  "operating_cost_escalation": 0.03,
+  "ramp_first_three_months": [
+    0.4,
+    0.6,
+    0.8
+  ],
+  "monte_carlo": {
+    "draws": 10000,
+    "seed": 42,
+    "volume_cv": 0.165,
+    "part_value_uniform": [
+      12.0,
+      18.0
+    ],
+    "capex_sd_fraction": 0.0885,
+    "opex_sd_fraction": 0.1,
+    "correlated_variant_rho": -0.5,
+    "volume_cv_variants": [
+      0.1,
+      0.25
+    ]
+  },
+  "one_way_change": 0.2,
+  "scenarios": {
+    "Pessimistic": {
+      "vol": 0.7,
+      "value": 0.85,
+      "capex": 1.1,
+      "opex": 1.1
+    },
+    "Base": {
+      "vol": 1.0,
+      "value": 1.0,
+      "capex": 1.0,
+      "opex": 1.0
+    },
+    "Optimistic": {
+      "vol": 1.25,
+      "value": 1.1,
+      "capex": 0.95,
+      "opex": 0.95
+    }
+  },
+  "scenario_weights": {
+    "Pessimistic": 0.25,
+    "Base": 0.5,
+    "Optimistic": 0.25
+  },
+  "labor_release": {
+    "freed_hours_per_shift_N2": 8.0,
+    "wages_per_hour": [
+      28.0,
+      45.0
+    ]
+  }
+}

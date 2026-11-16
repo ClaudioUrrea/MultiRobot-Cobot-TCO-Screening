@@ -1,0 +1,9 @@
+input,npv_minus20_MUSD,npv_plus20_MUSD,range_MUSD
+Production volume,0.3518,1.03,0.6783
+Part value,0.4913,0.8904,0.3991
+Operating cost,0.7755,0.6062,0.1693
+Discount rate,0.7617,0.6276,0.1341
+Tax rate,0.7463,0.6354,0.1109
+Capital expenditure,0.7248,0.657,0.0677
+Quality savings,0.6579,0.7239,0.066
+Labor reallocation,0.6667,0.715,0.0483

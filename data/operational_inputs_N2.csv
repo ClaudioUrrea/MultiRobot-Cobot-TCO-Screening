@@ -1,0 +1,9 @@
+quantity,unit,manual,nominal,disrupted,interval_90_nominal,use_in_appraisal
+throughput,units/shift,228,554,547,,base: nominal; check: disrupted
+defect_rate,%,3.2,0.6,0.8,,base: nominal; check: disrupted
+uptime,%,87.7,98.5,95.8,,embedded in throughput
+energy,kWh/shift,42.3,31.2,32.8,,not credited
+direct_labor,operator-h/shift,16.0,8.0,,,robustness check only
+injuries_projected,per 1000 h,2.8,0.4,,"[0.15, 1.05]",not monetized
+satisfaction_projected,/5,3.2,4.6,,"[3.9, 5.0]",not monetized
+turnover_projected,%/yr,18.6,5.9,,"[3.4, 10.4]",not monetized
