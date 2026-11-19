@@ -5,7 +5,7 @@ import difflib, json, re, sys, time, urllib.request
 from pathlib import Path
 
 here = Path(__file__).resolve().parent
-cands = [Path(a) for a in sys.argv[1:]] + [here / "P4_Machines.tex", here.parent / "P4_Machines.tex"]
+cands = [Path(a) for a in sys.argv[1:]] + [here / "P4_Systems.tex", here.parent / "P4_Systems.tex"]
 tex = next(p for p in cands if p.exists()).read_text()
 bib = tex[tex.find("\\begin{thebibliography}"):]
 items = re.findall(r"\\bibitem\{([^}]+)\}\s*(.*?)(?=\\bibitem|\\end\{thebibliography\})", bib, re.S)

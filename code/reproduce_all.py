@@ -67,6 +67,10 @@ summary = {"base": _r(E.mc_summary(npv)),
            "correlated_rho_-0.5": _r(E.mc_summary(E.monte_carlo(rho_vp=-0.5)[0])),
            "volume_cv_0.10": _r(E.mc_summary(E.monte_carlo(cv_volume=0.10)[0])),
            "volume_cv_0.25": _r(E.mc_summary(E.monte_carlo(cv_volume=0.25)[0]))}
+import p4_systems as S  # noqa: E402
+summary["capacity_capped"] = _r(E.mc_summary(S.monte_carlo_capped()))
+_tests, _conv = S.verification_tests()
+summary["convergence_10k_vs_100k"] = _r(_conv)
 json.dump(summary, open(RES / "monte_carlo_summary_N2.json", "w"), indent=2)
 
 sc, ev = E.scenarios()
@@ -78,6 +82,29 @@ for w, (n, p) in E.labor_release().items():
     cf = E.cash_flows(1, ls=E.LABOR_REALLOC + 8 * E.SHIFTS["single"] * w / 1000)
     rows.append([f"Freed hours released at {w:.0f}/h", round(n, 4), round(E.irr_of(cf, E.CAPEX[1]), 2), round(p, 2)])
 write_csv("scenarios_and_robustness_N2.csv", ["case", "npv_MUSD", "irr_pct", "payback_months"], rows)
+write_csv("verification_checks.csv", ["check", "deviation", "tolerance", "pass"],
+          [[n, f"{d:.3e}", t, d <= t] for n, d, t in _tests])
+write_csv("published_cases_replication.csv",
+          ["case", "source", "currency", "robots", "capex", "annual_benefit", "annual_opex", "reported", "recomputed",
+           "simple_payback_months", "common_basis_npv_k", "common_basis_irr_pct", "common_basis_payback_months", "profitability_index"],
+          [[c["case"], c["key"], c["currency"], c["robots"], c["capex"], c["benefit"], c["opex"],
+            ";".join(f"{x:.2f}" for x in c["reported"]), ";".join(f"{x:.2f}" for x in c["recomputed"]),
+            round(c["simple_pb"], 2), round(c["npv"], 2), round(c["irr"], 2), round(c["pb"], 2), round(c["pi"], 4)]
+           for c in S.published_cases()]
+          + [[d["case"], "this paper", "USD", int(d["case"][-1]), d["capex"] * 1000, "", "", "", "", "",
+              round(d["npv"], 2), round(d["irr"], 2), round(d["pb"], 2), round(d["pi"], 4)] for d in S.own_designs_common()])
+_sv, _ex = S.switching_values()
+write_csv("switching_values_N2.csv", ["input", "base_value", "switching_value", "unit", "relative_change"],
+          [[k, v[2], v[0], v[1], v[3]] if v and v[0] is not None else [k, v[2] if v else "", "none", v[1] if v else "", ""]
+           for k, v in _sv.items()] + [[f"NPV_kUSD_{k}", "", round(x, 2), "kUSD", ""] for k, x in _ex.items()])
+write_csv("twin_tolerance.csv", ["N", "schedule", "cell_output_overstatement_pct", "manual_output_understatement_pct"],
+          [[t["N"], t["sched"], round(t["cell_overstatement"], 2), round(float(t["manual_understatement"]), 2)] for t in S.twin_tolerance()])
+_d, _grid, _best, _bv, _bands, _mind = S.demand_map()
+write_csv("demand_map_best_design.csv", ["demand_from", "demand_to", "N", "schedule", "npv_low_MUSD", "npv_high_MUSD"],
+          [[lo, hi, "" if k is None else k[0] + 1, "none" if k is None else k[1], round(a / 1000, 4), round(b / 1000, 4)]
+           for lo, hi, k, a, b in _bands])
+write_csv("demand_map_npv_grid_kUSD.csv", ["demand"] + [f"N{i + 1}_{s}" for (i, s) in _grid],
+          [[int(dd)] + [round(_grid[k][j], 2) for k in _grid] for j, dd in enumerate(_d)])
 print(f"results written to {RES}")
 
 subprocess.run([sys.executable, str(HERE / "p4_figures.py")], check=True)

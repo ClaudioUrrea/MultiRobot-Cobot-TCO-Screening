@@ -1,0 +1,11 @@
+check,deviation,tolerance,pass
+"Closed-form annuity (no tax, escalation, ramp or salvage)",1.137e-12,1e-06,True
+Closed form with tax and straight-line depreciation,9.095e-13,1e-06,True
+NPV evaluated at the computed IRR,5.201e-14,0.001,True
+Cumulative cash flow at the computed payback month,1.279e-13,1e-06,True
+Zero-benefit case equals discounted operating cost,0.000e+00,1e-06,True
+Homogeneity: scaling every monetary input by 3.7,4.547e-13,1e-06,True
+"Monotonicity in volume, price, capital, operating cost, discount rate",0.000e+00,0.5,True
+"Independent vectorized re-implementation, all five designs",4.547e-13,1e-06,True
+"Monte Carlo: loss probability, 10k (seed 42) vs 100k (seed 2026), points",7.600e-02,0.5,True
+"Monte Carlo: 5th percentile, 10k vs 100k draws, k$",7.207e-01,15.0,True

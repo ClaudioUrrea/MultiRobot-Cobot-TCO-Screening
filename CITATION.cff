@@ -10,13 +10,15 @@ authors:
 doi: 10.6084/m9.figshare.35025634
 repository-code: "https://github.com/ClaudioUrrea/MultiRobot-Cobot-TCO-Screening"
 license: MIT
-version: 1.0.0
-date-released: 2026-11-16
+version: 1.1.0
+date-released: 2026-11-19
 keywords:
   - collaborative robots
+  - socio-technical systems
   - total cost of ownership
-  - net present value
+  - capacity planning
   - Monte Carlo simulation
+  - model verification
   - digital twin
 preferred-citation:
   type: article
@@ -24,7 +26,7 @@ preferred-citation:
     - family-names: Urrea
       given-names: Claudio
       orcid: "https://orcid.org/0000-0001-7197-8928"
-  title: "Digital-Twin-Based Total Cost of Ownership and Risk Screening for Multi-Robot Collaborative Assembly Cells"
-  journal: "Machines"
+  title: "Configuring Multi-Robot Collaborative Assembly Systems under Demand Uncertainty: A Simulation-Based Total Cost of Ownership and Risk Screening Framework"
+  journal: "Systems"
   year: 2026
   notes: "Submitted"

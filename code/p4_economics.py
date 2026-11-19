@@ -2,7 +2,7 @@
 """
 p4_economics.py -- single source of truth for every economic number in the article
 "Digital-Twin-Based Total Cost of Ownership and Risk Screening for Multi-Robot
-Collaborative Assembly Cells" (C. Urrea, submitted to Machines, 2026).
+Collaborative Assembly Cells" (C. Urrea, submitted to Systems, 2026).
 
 All inputs are read from the data/ folder: digital-twin throughput series,
 operational inputs, itemized capital and operating cost (with the flag that

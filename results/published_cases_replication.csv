@@ -1,0 +1,9 @@
+case,source,currency,robots,capex,annual_benefit,annual_opex,reported,recomputed,simple_payback_months,common_basis_npv_k,common_basis_irr_pct,common_basis_payback_months,profitability_index
+Engine assembly,martin2025,USD,1,68000.0,41602.56,4407.58,-30805.02;6389.96,-30805.02;6389.96,21.94,125.72,39.76,29.48,1.8489
+Machine loading,polonara2024,EUR,1,45000.0,65812.0,0.0,123000.00,123085.34,8.21,284.2,103.94,12.13,6.3156
+Production line,titu2024,EUR,2,98433.54,319033.92,1546.27,638067.84;88686.92,638067.84;88686.92,3.72,1458.9,221.83,6.24,14.8211
+N = 1,this paper,USD,1,142000.0,,,,,,153.8,28.29,38.34,1.0831
+N = 2,this paper,USD,2,226000.0,,,,,,690.89,58.77,20.55,3.057
+N = 3,this paper,USD,3,312000.0,,,,,,2766.32,141.6,9.23,8.8664
+N = 4,this paper,USD,4,398000.0,,,,,,3421.97,137.87,9.45,8.5979
+N = 5,this paper,USD,5,483000.0,,,,,,3609.35,122.23,10.54,7.4728

@@ -1,0 +1,12 @@
+input,base_value,switching_value,unit,relative_change
+Cell output (digital-twin throughput),554,328.2824057083107,units/shift,-0.4074324806709193
+Manual comparator output,228,453.71759429168924,units/shift,0.9899894486477598
+Unit margin (part value x gross margin),3.3,1.0151286467405687,$/unit,-0.692385258563464
+Operating cost,76.79999999999998,201.29774316051584,k$/yr,1.621064364069217
+Capital expenditure,226.0,1147.9816405099778,k$,4.0795647810176
+Discount rate,8.0,58.766769276287576,%,6.345846159535947
+Quality savings,34.14528,none,k$/yr,
+Redeployment allowance,25.0,none,k$/yr,
+NPV_kUSD_npv_no_qs,,525.94,kUSD,
+NPV_kUSD_npv_no_ls,,570.12,kUSD,
+NPV_kUSD_npv_no_qs_ls,,405.17,kUSD,

@@ -1,28 +1,31 @@
 # MultiRobot-Cobot-TCO-Screening
 
-Economic model, digital-twin inputs, results and verification scripts for the article
+Economic model, digital-twin inputs, published-case data, results and verification scripts for the article
 
-> Urrea, C. *Digital-Twin-Based Total Cost of Ownership and Risk Screening for Multi-Robot Collaborative Assembly Cells*. Submitted to *Machines* (MDPI), 2026.
+> Urrea, C. *Configuring Multi-Robot Collaborative Assembly Systems under Demand Uncertainty: A Simulation-Based Total Cost of Ownership and Risk Screening Framework*. Submitted to *Systems* (MDPI), 2026.
 
-Archived release: Figshare, DOI [10.6084/m9.figshare.35025634](https://doi.org/10.6084/m9.figshare.35025634).
+Archived release (version 1.1.0): Figshare, DOI [10.6084/m9.figshare.35025634](https://doi.org/10.6084/m9.figshare.35025634).
 Development repository: <https://github.com/ClaudioUrrea/MultiRobot-Cobot-TCO-Screening>.
 
 ## What the deposit contains
 
-The article appraises assembly cells with one to five collaborative robots on ten-year, incremental, after-tax cash flows against a manual line operating on the same shift schedule. It adds one-way sensitivity, break-even volumes, a Monte Carlo analysis with a variance decomposition, coherent scenarios and two robustness checks. Every number in the tables, figures and text is produced by the code in this repository from the files in `data/`.
+The article treats a cell with one to five collaborative robots as a socio-technical production system and appraises it on ten-year, incremental, after-tax cash flows against a manual line operating on the same shift schedule. It adds one-way sensitivity, break-even volumes, a Monte Carlo analysis with a variance decomposition and correlated, dispersion and capacity-capped variants, coherent scenarios, robustness checks, a demand-constrained design map and a credibility assessment (ten verification checks, replication of three published industrial cases and switching values). Every number in the tables, figures and text is produced by the code in this repository from the files in `data/`.
 
-**Nature of the data.** No physical cell was built, no accounting record was consulted and no person supplied data. Operational inputs are outputs of the physics-based digital twin of the companion study (Urrea, *IEEE Access* 2026, doi:10.1109/ACCESS.2026.3754761; archive doi:10.6084/m9.figshare.33090107). Costs, prices and financial parameters are scenario parameters stated in `data/`.
+**Nature of the data.** No physical cell was built and no new data were measured. Operational inputs are outputs of the physics-based digital twin of the companion study (Urrea, *IEEE Access* 2026, doi:10.1109/ACCESS.2026.3754761; archive doi:10.6084/m9.figshare.33090107). Costs, prices and financial parameters are scenario parameters stated in `data/`. The published-case file holds values reported by other authors (Martin et al. 2025, doi:10.1049/cim2.70044; Polonara et al. 2024, doi:10.3390/machines12030196; Titu et al. 2024, doi:10.3390/su16135292).
 
 ```
 data/
-  digital_twin_inputs.csv                  coordination efficiency and throughput, N = 1..5 (companion study)
-  operational_inputs_N2.csv                manual / nominal / disrupted values for N = 2 (Table 5)
-  capex_items_kUSD.csv                     capital expenditure items (Table 2)
+  digital_twin_inputs.csv                   coordination efficiency and throughput, N = 1..5 (companion study)
+  operational_inputs_N2.csv                 manual / nominal / disrupted values for N = 2 (Table 5)
+  capex_items_kUSD.csv                      capital expenditure items (Table 2)
   opex_items_single_shift_kUSD_per_year.csv operating-cost items and hour-scaling flag (Table 3)
-  parameters.json                          financial, scenario and Monte Carlo parameters
+  parameters.json                           financial, scenario and Monte Carlo parameters
+  published_cases.csv                       values taken from three published industrial cases (Table 7)
 code/
   p4_economics.py      cash-flow model (single source of truth)
-  p4_figures.py        Figures 1-8
+  p4_systems.py        verification checks, published-case replication, switching values,
+                       digital-twin error tolerance, demand map, capacity-capped Monte Carlo
+  p4_figures.py        Figures 1-10
   figure_style.py      common figure style (TeX Gyre Pagella, U+2212 minus sign, TrueType embedding)
   reproduce_all.py     writes results/ and figures/; optionally verifies a manuscript source
   verify_numbers.py    recomputes every number and checks that it appears in the manuscript source
@@ -37,31 +40,41 @@ Python 3.10 or later.
 
 ```bash
 pip install -r requirements.txt
-python code/reproduce_all.py                       # results/ and figures/
-python code/reproduce_all.py path/to/P4_Machines.tex   # also checks every number in the text
+python code/reproduce_all.py                          # results/ and figures/
+python code/reproduce_all.py path/to/P4_Systems.tex   # also checks every number in the text
+python code/p4_systems.py                             # prints the ten verification checks
 ```
 
-The Monte Carlo analysis uses a fixed seed (42), so all outputs are identical between runs. The figure style converts the OpenType TeX Gyre Pagella fonts shipped with TeX Live to TrueType on first use; if they are not installed, set `OTF_DIRS` in `code/figure_style.py` to their location.
+The Monte Carlo analysis uses fixed seeds (42; 2026 for the convergence check), so all outputs are identical between runs. The figure style converts the OpenType TeX Gyre Pagella fonts shipped with TeX Live to TrueType on first use; if they are not installed, set `OTF_DIRS` in `code/figure_style.py` to their location.
 
 ## Correspondence between results and the article
 
 | Article | Output |
 |---|---|
-| Table 4 (annual production economics), Table 7 (appraisal), Figure 4 | `results/appraisal_by_configuration.csv` |
-| Table 8 (shift schedule), Figure 6 | `results/shift_schedule.csv` |
-| Table 9 (one-way sensitivity), Figure 7 | `results/one_way_sensitivity_N2.csv` |
-| Table 10 (break-even volume) | `results/break_even.csv` |
-| Section 4.4, Table 6, Figure 8 (Monte Carlo) | `results/monte_carlo_draws_N2.csv`, `results/monte_carlo_summary_N2.json` |
-| Table 11 (scenarios and robustness checks) | `results/scenarios_and_robustness_N2.csv` |
-| Figures 1-3, 5 | `figures/` |
+| Table 4 (annual production economics), Table 8 (appraisal), Figures 5-6 | `results/appraisal_by_configuration.csv` |
+| Table 9 (shift schedule), Figure 7 | `results/shift_schedule.csv` |
+| Table 10 (one-way sensitivity), Figure 8 | `results/one_way_sensitivity_N2.csv` |
+| Table 11 (break-even volume) | `results/break_even.csv` |
+| Section 4.4, Table 6, Figure 9 (Monte Carlo, variants, convergence) | `results/monte_carlo_draws_N2.csv`, `results/monte_carlo_summary_N2.json` |
+| Table 12 (scenarios and robustness checks) | `results/scenarios_and_robustness_N2.csv` |
+| Table 13, Figure 10 (demand-constrained design) | `results/demand_map_best_design.csv`, `results/demand_map_npv_grid_kUSD.csv` |
+| Table 14 (verification checks) | `results/verification_checks.csv` |
+| Tables 7 and 15 (published cases) | `data/published_cases.csv`, `results/published_cases_replication.csv` |
+| Table 16 and Section 4.7 (switching values, twin tolerance) | `results/switching_values_N2.csv`, `results/twin_tolerance.csv` |
+| Figures 1-4 | `figures/` |
+
+## Versions
+
+- 1.1.0 (19 November 2026): version accompanying the submission to *Systems*. Adds `p4_systems.py`, `data/published_cases.csv`, the demand map, the credibility assessment, the capacity-capped Monte Carlo variant, Figures 1 and 10 and the corresponding results; figures renumbered.
+- 1.0.0 (16 November 2026): first release.
 
 ## Licenses
 
 Code (`code/`): MIT License, see `LICENSE`.
-Data, results and figures (`data/`, `results/`, `figures/`): Creative Commons Attribution 4.0 International, see `LICENSE-DATA`.
+Data, results and figures (`data/`, `results/`, `figures/`): Creative Commons Attribution 4.0 International, see `LICENSE-DATA`. Values in `data/published_cases.csv` are reproduced from the cited articles for verification; cite those articles when using them.
 
 ## How to cite
 
 Cite the article and the archived release (see `CITATION.cff`):
 
-Urrea, C. MultiRobot-Cobot-TCO-Screening: Economic Model, Digital-Twin Inputs and Verification Scripts. Figshare, 2026. https://doi.org/10.6084/m9.figshare.35025634
+Urrea, C. MultiRobot-Cobot-TCO-Screening: Economic Model, Digital-Twin Inputs and Verification Scripts, Version 1.1.0. Figshare, 2026. https://doi.org/10.6084/m9.figshare.35025634

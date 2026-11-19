@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Recompute every economic number of P4 from p4_economics.py and check that
-it appears, as printed, in P4_Machines.tex. Also runs style checks."""
+it appears, as printed, in P4_Systems.tex. Also runs style checks."""
 import re, sys
 from pathlib import Path
 import numpy as np
 import p4_economics as E
 
 _here = Path(__file__).resolve().parent
-_cands = [Path(a) for a in sys.argv[1:]] + [_here / "P4_Machines.tex", _here.parent / "P4_Machines.tex"]
+_cands = [Path(a) for a in sys.argv[1:]] + [_here / "P4_Systems.tex", _here.parent / "P4_Systems.tex"]
 _tex = next((p for p in _cands if p.exists()), None)
 if _tex is None:
     sys.exit("Manuscript source not found; pass its path as an argument.")
@@ -112,12 +112,65 @@ has(f"from \\$0.69M to \\${dn/1000:.2f}M and the payback lengthens from {r['payb
 lr = E.labor_release(); has(f"\\${lr[28.0][0]:.2f}M and \\${lr[45.0][0]:.2f}M", "labor release text")
 cx = sens["Capital expenditure"][1]; has(f"by only \\${base-cx:.2f}M", "capex overrun")
 if not (base - cx) / base < 0.05: fails.append("capex overrun claim (<5%) false")
+# ------------------------------------------------- Systems version: new claims
+import p4_systems as S
+tests, mc = S.verification_tests()
+if not all(d <= t for _, d, t in tests): fails.append("a verification check fails")
+an = max(d for n, d, t in tests[:6]); has("to within $10^{-11}$\\,k\\$", "analytic tol")
+if an >= 1e-11: fails.append("analytic deviation >= 1e-11")
+if tests[7][1] >= 1e-12: fails.append("re-implementation deviation >= 1e-12")
+has(f"change by {tests[8][1]:.2f} percentage points", "MC conv pp")
+if tests[9][1] >= 1.0: fails.append("MC p5 change >= 1k")
+has(f"the loss probability is {mc['p_neg_100k']:.2f}\\% and the 5th and 95th percentiles are \\${mc['p5_100k']:.2f}M and \\${mc['p95_100k']:.2f}M", "MC 100k")
+cap = E.mc_summary(S.monte_carlo_capped())
+has(f"the mean falls to \\${cap['mean']:.2f}M, the 90\\% interval becomes [\\${cap['p5']:.2f}M, \\${cap['p95']:.2f}M]", "capped MC")
+has(f"negligible ({cap['p_gt1']:.2f}\\%)", "capped >1M"); has(f"unchanged at {cap['p_neg']:.1f}\\%", "capped loss")
+cases = S.published_cases()
+for c in cases:
+    if c["key"] != "polonara2024" and c["max_dev"] > 0.005: fails.append(f"case not reproduced: {c['key']}")
+pi = [c["pi"] for c in cases]; pb = [c["pb"] for c in cases]
+has(f"indices of {pi[0]:.2f}, {pi[1]:.2f} and {pi[2]:.2f} and paybacks of {pb[0]:.1f}, {pb[1]:.1f} and {pb[2]:.1f} months", "case PI")
+own = S.own_designs_common()
+has(f"indices of {min(d['pi'] for d in own):.2f}--{max(d['pi'] for d in own):.2f} and paybacks of {min(d['pb'] for d in own):.1f}--{max(d['pb'] for d in own):.1f} months", "own PI")
+has(f"(index {own[1]['pi']:.2f}, {own[1]['pb']:.1f} months)", "N2 PI")
+has(f"implies {cases[0]['simple_pb']:.1f} months", "martin simple pb")
+has(f"break-even of {cases[1]['recomputed'][0]:,.0f} parts".replace(",", "{,}"), "polonara be")
+cpr = [c["capex_per_robot"] / 1000 for c in cases]
+lo, hi = E.CAPEX[-1] / 5 / max(cpr), E.CAPEX[0] / min(cpr)
+has(f"{lo:.1f}--{hi:.1f} times", "capex per robot ratio")
+has("about eleven times the USD 4407.58", "opex ratio text")
+if round(E.OPEX_SINGLE[0] * 1000 / cases[0]["opex"]) != 11: fails.append("opex ratio not eleven")
+if round(100 * (E.DEFECT_MANUAL - E.DEFECT_COBOT) / E.DEFECT_MANUAL) != 81: fails.append("defect reduction 81%")
+sv, ex = S.switching_values()
+has(f"operating cost can rise by {100 * sv['Operating cost'][3]:.0f}\\% and capital by {100 * sv['Capital expenditure'][3]:.0f}\\%", "switch cost")
+has(f"internal rate of return of {sv['Discount rate'][0]:.1f}\\%", "switch IRR")
+has(f"the NPV is \\${ex['npv_no_qs'] / 1000:.2f}M and \\${ex['npv_no_ls'] / 1000:.2f}M, and without both it is \\${ex['npv_no_qs_ls'] / 1000:.2f}M", "switch qs ls")
+has(f"cell output can fall by {-100 * sv['Cell output (digital-twin throughput)'][3]:.0f}\\% and the unit margin by {-100 * sv['Unit margin (part value x gross margin)'][3]:.0f}\\%", "switch rev")
+has(f"produce {100 * sv['Manual comparator output'][3]:.0f}\\% more", "switch manual")
+has(f"at least {sv['Cell output (digital-twin throughput)'][0]:.0f} units per shift against a manual line of no more than {sv['Manual comparator output'][0]:.0f}", "pilot criteria")
+if round(1 + sv["Capital expenditure"][3]) != 5: fails.append("capital fivefold claim")
+tt = S.twin_tolerance()
+has(f"overstated by {tt[0]['cell_overstatement']:.0f}\\% for one robot, {tt[1]['cell_overstatement']:.0f}\\% for two and "
+    f"{min(t['cell_overstatement'] for t in tt[2:]):.0f}--{max(t['cell_overstatement'] for t in tt[2:]):.0f}\\%", "twin tol")
+has("understated by " + ", ".join(f"{t['manual_understatement']:.0f}\\%" for t in tt[:4]) + f" and {tt[4]['manual_understatement']:.0f}\\%", "manual tol")
+if not (tt[0]["cell_overstatement"] < 20 and all(t["cell_overstatement"] >= 20 for t in tt[1:])): fails.append("only N=1 below 20%")
+d, grid, best, bv, bands, mind = S.demand_map()
+b = {(None if k is None else (k[0] + 1, k[1])): (lo_, hi_) for lo_, hi_, k, *_ in bands}
+if b[None][1] + 1000 != 50000: fails.append("no-invest threshold")
+if b[(2, "single")] != (73000, 120000): fails.append("N2 band")
+if b[(2, "dual")][0] != 210000 or b[(5, "single")][1] != 209000: fails.append("dual threshold")
+if b[(3, "triple")][0] != 417000: fails.append("triple threshold")
+if b[(3, "dual")] != (233000, 327000): fails.append("N3 dual band")
+has(f"three robots on one shift earn \\${S.npv_demand(2, 'single', 154000) / 1000:.2f}M and two robots on two shifts \\${S.npv_demand(1, 'dual', 154000) / 1000:.2f}M", "154k comparison")
+has(f"two robots on one shift make {S.capacity(1, 'single'):,.0f} units".replace(",", "{,}"), "cap N2"); has(f"make {S.capacity(2, 'dual'):,.0f} units".replace(",", "{,}"), "cap N3 dual")
+lr = E.labor_release(); has(f"by \\${lr[28.0][0] - r['npv'][1] / 1000:.2f}--{lr[45.0][0] - r['npv'][1] / 1000:.2f}M", "labor release delta")
+
 # abstract
 ab_txt = re.search(r"\\abstract\{(.*?)\}\n", tex, re.S).group(1)
-for s_ in (f"\\${r['npv'][0]/1000:.2f}M, {r['payback'][0]:.1f}-month payback", f"\\${r['npv'][1]/1000:.2f}M at a {r['irr'][1]:.0f}\\%",
-           f"\\${r['npv'][2]/1000:.2f}M with a {r['payback'][2]:.1f}-month", f"{s['p_neg']:.1f}\\% probability",
-           f"[\\${s['p5']:.2f}M, \\${s['p95']:.2f}M]", f"explains {100*sh[0]:.0f}\\%", f"\\${scn['Pessimistic']['npv']:.2f}M"):
-    if s_ not in ab_txt: fails.append(f"abstract missing: {s_}")
+for s_ in (f"\\${r['npv'][0]/1000:.2f}M, {r['payback'][0]:.1f}-month payback", f"\\${r['npv'][1]/1000:.2f}M with a {s['p_neg']:.1f}\\% probability",
+           f"explains {100*sh[0]:.0f}\\%", f"throughput is {-100 * sv['Cell output (digital-twin throughput)'][3]:.0f}\\% lower",
+           "below 50,000", "between 73,000 and 120,000", "only above 210,000", f"{len(tests)} verification checks".replace("10", "ten")):
+    if s_.replace(",", "{,}") not in ab_txt and s_ not in ab_txt: fails.append(f"abstract missing: {s_}")
 
 # style checks
 body = tex[tex.find("\\begin{document}"):tex.find("\\begin{thebibliography}")]
